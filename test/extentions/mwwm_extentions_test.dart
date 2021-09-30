@@ -146,7 +146,9 @@ void main() {
 
       stream.listenOn(wm, onValue: result.add);
 
-      _controller..add('wow')..add('rly');
+      _controller
+        ..add('wow')
+        ..add('rly');
 
       expect(result, equals(['wow', 'rly']));
     });
