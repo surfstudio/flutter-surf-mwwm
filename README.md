@@ -9,7 +9,7 @@
 
 This package made by [Surf](https://surf.ru/).
 
-## About
+## Description
 
 Reflection of widget in a single entity
 
@@ -23,6 +23,133 @@ dependencies:
 ```
 
 You can use both `stable` and `dev` versions of the package listed above in the badges bar.
+
+## Example
+
+1. Create WM class
+
+```dart
+class CounterWidgetModel extends WidgetModel {
+  CounterWidgetModel(
+    WidgetModelDependencies dependencies,
+    this.navigator,
+    this._key,
+  ) : super(dependencies);
+
+  final NavigatorState navigator;
+  final GlobalKey<ScaffoldState> _key;
+
+  StreamedState<int> counterState = StreamedState(0);
+
+  final incrementAction = VoidAction();
+  final showInit = StreamedAction<int>();
+
+  @override
+  void onLoad() {
+    _listenToActions();
+    super.onLoad();
+  }
+
+  void _listenToActions() {
+    incrementAction.bind((_) {
+      counterState.accept(counterState.value + 1);
+    }).listenOn(
+      this,
+      onValue: (_) {},
+    );
+
+    showInit.bind((_) {
+      ScaffoldMessenger.of(_key.currentContext!).showSnackBar(
+        const SnackBar(
+          content: Text('init'),
+        ),
+      );
+    }).listenOn(this, onValue: (_) {});
+
+    counterState.stream.where((c) => c.isEven).skip(1).listenOn(
+      this,
+      onValue: (c) {
+        navigator.push(
+          MaterialPageRoute<void>(
+            builder: (ctx) => Scaffold(
+              body: Column(
+                children: [
+                  TextField(
+                    autofocus: true,
+                    onChanged: (_) {},
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+```
+
+2. Create Screen
+
+```dart
+class CounterScreen extends MwwmWidget<CounterComponent> {
+  CounterScreen({Key? key})
+      : super(
+          key: key,
+          dependenciesBuilder: (context) =>
+              CounterComponent(Navigator.of(context)),
+          widgetStateBuilder: () => _CounterScreenState(),
+          widgetModelBuilder: createCounterModel,
+        );
+}
+
+class _CounterScreenState extends OldWidgetState<CounterWidgetModel> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: context.getComponent<CounterComponent>().scaffoldKey,
+      appBar: AppBar(
+        title: const Text('Counter Demo'),
+      ),
+      body: StreamBuilder(
+        stream: wm.counterState.stream,
+        initialData: 0,
+        builder: (context, snapshot) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('You have pushed the this many times:'),
+                Text(
+                  '${snapshot.data}',
+                  style: Theme.of(context).textTheme.caption,
+                ),
+                TextField(
+                  autofocus: true,
+                  onChanged: (_) {},
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: wm.incrementAction,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+```
+
+3. Create Route
+
+```dart
+class CounterScreenRoute extends MaterialPageRoute<void> {
+  CounterScreenRoute() : super(builder: (ctx) => CounterScreen());
+}
+```
 
 ## Changelog
 
