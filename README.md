@@ -1,6 +1,6 @@
 # Surf MWWM
 
-[![Build Status](https://shields.io/github/workflow/status/surfstudio/SurfGear/build?logo=github&logoColor=white)](https://github.com/surfstudio/SurfGear/tree/main/packages/surf_mwwm)
+[![Build Status](https://shields.io/github/actions/workflow/status/surfstudio/flutter-surf-mwwm/workflow.yaml?logo=github&logoColor=white)](https://github.com/surfstudio/SurfGear/tree/main/packages/surf_mwwm)
 [![Coverage Status](https://img.shields.io/codecov/c/github/surfstudio/SurfGear?flag=surf_mwwm&logo=codecov&logoColor=white)](https://codecov.io/gh/surfstudio/SurfGear)
 [![Pub Version](https://img.shields.io/pub/v/surf_mwwm?logo=dart&logoColor=white)](https://pub.dev/packages/surf_mwwm)
 [![Pub Likes](https://badgen.net/pub/likes/surf_mwwm)](https://pub.dev/packages/surf_mwwm)
